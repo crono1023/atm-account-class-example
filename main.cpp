@@ -22,8 +22,22 @@ class Account
  		
 		int CustomerID();
 		std::string getCustomerFullName();
-
+		
 	};
+
+class Checking : public Account 
+{
+	public:
+		Checking(int customerID, std::string custoemrFirstName, 
+			std::string customerLastName, int initialBalance);
+		int getBalance();
+		void debitAccount(int amount);
+		void creditAccount(int amount);
+
+
+	private:
+		int m_balance;
+};
 
 Account::Account(int customerID, std::string customerFirstName,
 	std::string customerLastName)
@@ -32,20 +46,6 @@ Account::Account(int customerID, std::string customerFirstName,
 			m_customerFirstName = customerFirstName;
 			m_customerLastName = customerLastName;
 }
-
-class Checking : public Account 
-{
-	public:
-		Checking(int customerID, std::string custoemrFirstName, 
-			std::string customerLastName, int initialBalance);
-		int getBalance()
-		{
-			return m_balance;
-		}
-
-	private:
-		int m_balance;
-};
 
 int Account::CustomerID()
 {
@@ -57,11 +57,31 @@ std::string Account::getCustomerFullName()
 	return m_customerFirstName + " " + m_customerLastName;
 }
 
+int Checking::getBalance()
+{
+	return m_balance;
+}
+
 Checking::Checking(int customerID, std::string customerFirstName, 
 	std::string customerLastName, int initialBalance)
 	: Account(customerID, customerFirstName, customerLastName)
 {
 	m_balance = initialBalance;
+}
+void Checking::debitAccount(int amount)
+{
+	if(amount > 0)
+	{
+		m_balance -= amount;
+	}
+}
+
+void Checking::creditAccount(int amount)
+{
+	if(amount > 0)
+	{
+		m_balance += amount;
+	}
 }
 
 
@@ -70,11 +90,18 @@ int main(int argc, char *argv[])
 	//Account account (123456);
 	Checking checking (12345, "Chuck", "Haines", 1000);
 	std::cout << "Customer ID: " << checking.CustomerID() << ".\n";
-	std::cout << "Checking Account Balance: " << checking.getBalance() 
+	std::cout << "Checking Account Balance: $" << checking.getBalance() 
 		<< std::endl;
 	std::cout << "Customer Name: " << checking.getCustomerFullName() << 
 		std::endl;
-	std::cout << "End\n";
+	std::cout << "Adding $500 Debit to account.\n";
+	checking.debitAccount(500);
+	std::cout << "Checking account new balance: $" << checking.getBalance()
+		<< std::endl;
+	std::cout << "Crediting account $250.\n";
+	checking.creditAccount(250);
+	std::cout << "Checking account new balance: $" << 
+		checking.getBalance() << std::endl;
 
 	return 0;
 }
