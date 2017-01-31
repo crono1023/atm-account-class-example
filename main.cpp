@@ -74,6 +74,7 @@ int main(int argc, char *argv[])
 		<< std::endl;
 	std::cout << "Customer Name: " << checking.getCustomerFullName() << 
 		std::endl;
+	std::cout << "End\n";
 
 	return 0;
 }
