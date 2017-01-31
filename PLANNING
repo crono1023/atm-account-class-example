@@ -1,0 +1,40 @@
+
+
+
+Abstract Class: Account
+Sub Classes: Checking
+					   Savings
+             Business
+
+
+main program starts with asking for acct number
+
+if matching account number: 
+
+asks for pin:
+
+if pin matches:
+
+Main ATM Screen
+
+
+Main ATM Screen: 
+
+View Account Balance
+
+Deposit 
+
+Withdrawl
+
+Return Card/Exit
+
+
+Class Account
+construction : needs customer id number
+
+Class Checking constructor: customerid, initial_amount
+
+Class Savings constructor: customerid, initial_amount
+
+Class Business constructor: customerid, initial_amount
+
