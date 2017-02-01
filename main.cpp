@@ -14,11 +14,12 @@ class Account
 		int m_customerID;
 		std::string m_customerFirstName;
 		std::string m_customerLastName;
+		int m_accountType;
 
 	
 	public:
 		Account(int customerID, std::string customerFirstName, 
-			std::string customerLastName);
+			std::string customerLastName, int acountType);
  		
 		int CustomerID();
 		std::string getCustomerFullName();
@@ -29,7 +30,7 @@ class Checking : public Account
 {
 	public:
 		Checking(int customerID, std::string custoemrFirstName, 
-			std::string customerLastName, int initialBalance);
+			std::string customerLastName, int initialBalance, int accountType);
 		int getBalance();
 		void debitAccount(int amount);
 		void creditAccount(int amount);
@@ -43,7 +44,7 @@ class Savings : public Account
 {
 	public:
 		Savings(int customerID, std::string customerFirstName,
-			std::string customerLastName, int initialBalance);
+			std::string customerLastName, int initialBalance, int accountType);
 		int getBalance();
 		void debitAccount(int amount);
 		void creditAccount(int amount);
@@ -56,7 +57,7 @@ class Business : public Account
 {
 	public:
 		Business(int customerID, std::string customerFirstName,
-			std::string customerLastName, int initialBalance);
+			std::string customerLastName, int initialBalance, int accountType);
 		int getBalance();
 		void debitAccount(int amount);
 		void creditAccount(int amount);
@@ -65,11 +66,12 @@ class Business : public Account
 };
 
 Account::Account(int customerID, std::string customerFirstName,
-	std::string customerLastName)
+	std::string customerLastName, int accountType)
 {
 			m_customerID = customerID;
 			m_customerFirstName = customerFirstName;
 			m_customerLastName = customerLastName;
+			m_accountType = accountType;
 }
 
 int Account::CustomerID()
@@ -88,10 +90,11 @@ int Checking::getBalance()
 }
 
 Checking::Checking(int customerID, std::string customerFirstName, 
-	std::string customerLastName, int initialBalance)
-	: Account(customerID, customerFirstName, customerLastName)
+	std::string customerLastName, int initialBalance, int accountType)
+	: Account(customerID, customerFirstName, customerLastName, accountType)
 {
 	m_balance = initialBalance;
+	
 }
 void Checking::debitAccount(int amount)
 {
@@ -110,8 +113,8 @@ void Checking::creditAccount(int amount)
 }
 
 Savings::Savings(int customerID, std::string customerFirstName,
-	std::string customerLastName, int initialBalance)
-	: Account(customerID, customerFirstName, customerLastName)
+	std::string customerLastName, int initialBalance, int accountType)
+	: Account(customerID, customerFirstName, customerLastName, accountType)
 {
 	m_balance = initialBalance;
 }
@@ -138,8 +141,8 @@ void Savings::creditAccount(int amount)
 }
 
 Business::Business(int customerID, std::string customerFirstName,
-	std::string customerLastName, int initialBalance)
-: Account(customerID, customerFirstName, customerLastName)
+	std::string customerLastName, int initialBalance, int accountType)
+: Account(customerID, customerFirstName, customerLastName, accountType)
 {
 	m_balance = initialBalance;
 }
@@ -193,6 +196,16 @@ int convertInt(std::string input, bool &success)
 	return buffer;
 }
 
+void displayMainMenu(int customerID, std::string customerName)
+{
+	
+		newConsoleLine();
+		std::cout << "Welcome " << customerName   
+			<< ".\n";
+		std::cout << "Please select an action: \n\n";
+	
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -202,16 +215,28 @@ int main(int argc, char *argv[])
 	
 	std::vector<int> customerIDS;
 
+	//Create a list of account types, the account type will show
+	// what type of account is stored by each ID at the matching
+	// position on the customer IDS  vector.
+
+	std::vector<int> customerAccountTypes;
+
 	bool foundCustomer = false;
 	bool success;
 	int selectedID = 0;
+	int selectedCustomerID = 0;
+	int selectedCustomerAccountType = 0;
+	std::string selectedCustomerName = "";
 
-	Checking checking (1000, "John", "Doe", 240);
+	Checking checking (1000, "John", "Doe", 240, 1);
 	customerIDS.push_back(1000);
-	Savings savings (1001, "Jane", "Smith", 6700);
+	customerAccountTypes.push_back(1);
+	Savings savings (1001, "Jane", "Smith", 6700, 2);
 	customerIDS.push_back(1001);
-	Business business (1002, "Elon", "Musk", 140000);
+	customerAccountTypes.push_back(2);
+	Business business (1002, "Elon", "Musk", 140000, 3);
 	customerIDS.push_back(1002);
+	customerAccountTypes.push_back(3);
 
 	std::string input;
 
@@ -222,7 +247,7 @@ int main(int argc, char *argv[])
 	while(!foundCustomer)
 	{
 
-		std::cout << "Welcome to ATM System v1.1";
+		std::cout << "Welcome to ATM System v1.1\n\n";
 		newConsoleLine;
 		std::cout << "Please enter your ID number: ";
 		std::cin >> input;
@@ -231,21 +256,52 @@ int main(int argc, char *argv[])
 
 		if(success)
 		{
-			for(int i = 0; i < customerIDS.size() ; i++)
+			for(int i = 0; i < customerIDS.size() || !foundCustomer; i++)
 			{
 				if(customerIDS[i] == selectedID)
 				{
 					if(!foundCustomer)
 					{
-						std::cout << "i: " << i << std::endl;		
-						std::cout << "Matched at position: " << i <<
-						std::endl;
+						selectedCustomerID = customerIDS[i];
+						selectedCustomerAccountType = customerAccountTypes[i];
+				
+/*						
+						if(selectedCustomerAccountType == 1)
+						{
+							selectedCustomerName = checking.getCustomerFullName();
+							std::cout << "\nrun 1";
+						}
+						else if (selectedCustomerAccountType == 2)
+						{
+							selectedCustomerName = savings.getCustomerFullName();
+							std::cout << "\nrun 2";
+						}
+						else if (selectedCustomerAccountType == 3)
+						{
+		
+							selectedCustomerName = business.getCustomerFullName();
+							std::cout << "\nrun 3";
+						}
+*/
+						switch(selectedCustomerAccountType)
+						{
+							case 1:
+								selectedCustomerName = checking.getCustomerFullName();
+								break;
+							case 2:
+								selectedCustomerName = savings.getCustomerFullName();
+								break;
+							case 3:
+								selectedCustomerName = business.getCustomerFullName();
+								break;
+						}
 						foundCustomer = true;
 					}
 				}
 			}
 
 			//TODO display main menu
+			displayMainMenu(selectedCustomerID, selectedCustomerName);
 		}
 
 	}
