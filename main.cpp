@@ -5,7 +5,7 @@
 //Includes
 #include <iostream>
 #include <string>
-
+#include <vector>
 
 class Account
 {
@@ -171,47 +171,84 @@ void newConsoleLine()
 		"------------------------------------------\n\n";
 }
 
+int convertInt(std::string input, bool &success)
+{
+	int buffer = 0;
+	success = true;
+	try
+	{
+		buffer = stof(input);
+	}
+	catch (const std::invalid_argument& ia)
+	{
+		std::cerr << "Invalid argument\n";
+		success = false;
+	}
+	catch (const std::out_of_range& oor)
+	{
+		std::cerr << "Out of range\n";
+		success = false;
+	}
+
+	return buffer;
+}
+
 
 int main(int argc, char *argv[])
 {
+
+	//Create custoemr accounts and add the ID numbers to a vector for
+	//lookup later
+	
+	std::vector<int> customerIDS;
+
+	bool foundCustomer = false;
+	bool success;
+	int selectedID = 0;
+
+	Checking checking (1000, "John", "Doe", 240);
+	customerIDS.push_back(1000);
+	Savings savings (1001, "Jane", "Smith", 6700);
+	customerIDS.push_back(1001);
+	Business business (1002, "Elon", "Musk", 140000);
+	customerIDS.push_back(1002);
+
+	std::string input;
+
 	//Account account (123456);
 	newConsoleLine();
-	Checking checking (12345, "Chuck", "Haines", 1000);
-	std::cout << "Customer ID: " << checking.CustomerID() << ".\n";
-	std::cout << "Checking Account Balance: $" << checking.getBalance() 
-		<< std::endl;
-	std::cout << "Customer Name: " << checking.getCustomerFullName() << 
-		std::endl;
-	std::cout << "Adding $500 Debit to account.\n";
-	checking.debitAccount(500);
-	std::cout << "Checking account new balance: $" << checking.getBalance()
-		<< std::endl;
-	std::cout << "Crediting account $250.\n";
-	checking.creditAccount(250);
-	std::cout << "Checking account new balance: $" << 
-		checking.getBalance() << std::endl;
-	newConsoleLine();
 
-	std::cout << "Adding savings account with initial balance of 3500"
-		<< std::endl;
+	
+	while(!foundCustomer)
+	{
 
-	Savings savings (86868, "Bob", "Jones", 3500);
-	std::cout << "Savings account balance: $" <<
-		savings.getBalance() << std::endl;
+		std::cout << "Welcome to ATM System v1.1";
+		newConsoleLine;
+		std::cout << "Please enter your ID number: ";
+		std::cin >> input;
+		
+		int selectedID = convertInt(input, success);
 
-	newConsoleLine();
+		if(success)
+		{
+			for(int i = 0; i < customerIDS.size() ; i++)
+			{
+				if(customerIDS[i] == selectedID)
+				{
+					if(!foundCustomer)
+					{
+						std::cout << "i: " << i << std::endl;		
+						std::cout << "Matched at position: " << i <<
+						std::endl;
+						foundCustomer = true;
+					}
+				}
+			}
 
-	std::cout << "Creating new business account.\n";
-	Business business (23456, "Mike", "Jackson", 15000);
-	std::cout << "Business Account Balance: $" << 
-		business.getBalance() << std::endl;
-	std::cout << "Crediting business account by $500.\n";
-		business.creditAccount(500);
-	std::cout << "Business Account Balance: $" << 
-		business.getBalance() << std::endl;
-	std::cout << "Business Account Holder Name: " <<
-		business.getCustomerFullName() << std::endl;
-	newConsoleLine();	
+			//TODO display main menu
+		}
 
+	}
+	
 	return 0;
 }
