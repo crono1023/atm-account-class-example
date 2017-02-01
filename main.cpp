@@ -198,13 +198,18 @@ int convertInt(std::string input, bool &success)
 
 void displayMainMenu(int customerID, std::string customerName)
 {
-	
+		
+
 		newConsoleLine();
 		std::cout << "Welcome " << customerName   
-			<< ".\n";
-		std::cout << "Please select an action: \n\n";
-	
-}
+			<< ".\n\n";
+		std::cout << "1 - View Account Balance\n";
+		std::cout << "2 - Withdrawl\n";
+		std::cout << "3 - Deposit\n";
+		newConsoleLine();
+		std::cout << "Please select an action: ";
+		
+}	
 
 
 int main(int argc, char *argv[])
@@ -226,6 +231,7 @@ int main(int argc, char *argv[])
 	int selectedID = 0;
 	int selectedCustomerID = 0;
 	int selectedCustomerAccountType = 0;
+	int menuSelection;
 	std::string selectedCustomerName = "";
 
 	Checking checking (1000, "John", "Doe", 240, 1);
@@ -237,7 +243,7 @@ int main(int argc, char *argv[])
 	Business business (1002, "Elon", "Musk", 140000, 3);
 	customerIDS.push_back(1002);
 	customerAccountTypes.push_back(3);
-
+	
 	std::string input;
 
 	//Account account (123456);
@@ -256,10 +262,18 @@ int main(int argc, char *argv[])
 
 		if(success)
 		{
-			for(int i = 0; i < customerIDS.size() || !foundCustomer; i++)
+			for(int i = 0; i < customerIDS.size(); i++)
 			{
 				if(customerIDS[i] == selectedID)
 				{
+
+					std::cout << "size: " << customerIDS.size() << std::endl;
+					std::cout << "i: " << i << std::endl;
+					std::cout << "Id list: " << customerIDS[i]
+						<< "selection: " << selectedID << std::endl;
+					std::cout << std::endl << customerIDS[0] <<
+					std::endl << customerIDS[1] << std::endl <<
+					customerIDS[2] << std::endl;
 					if(!foundCustomer)
 					{
 						selectedCustomerID = customerIDS[i];
@@ -299,11 +313,43 @@ int main(int argc, char *argv[])
 					}
 				}
 			}
-
-			//TODO display main menu
-			displayMainMenu(selectedCustomerID, selectedCustomerName);
 		}
+	}
+  //TODO display main menu
+	displayMainMenu(selectedCustomerID, selectedCustomerName);
 
+	std::cin >> input;
+	bool inputValid;
+	menuSelection = convertInt(input, inputValid);
+			
+	if(inputValid)
+	{
+		if(menuSelection > 0 && menuSelection < 4)
+		{
+			switch(menuSelection)
+			{
+				case 1:
+					newConsoleLine();
+					std::cout << "Your account balance is: ";
+					switch(selectedCustomerAccountType)
+					{
+						case 1: 
+							std::cout << checking.getBalance();
+							break;
+						case 2:
+							std::cout << savings.getBalance();
+							break;
+						case 3:
+							std::cout << business.getBalance();
+							break;
+					}
+					std::cout << std::endl;
+					newConsoleLine();
+					break;
+			}
+			
+			
+		}
 	}
 	
 	return 0;
