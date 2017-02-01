@@ -39,6 +39,21 @@ class Checking : public Account
 		int m_balance;
 };
 
+class Savings : public Account
+{
+	public:
+		Savings(int customerID, std::string customerFirstName,
+			std::string customerLastName, int initialBalance);
+		int getBalance();
+		void debitAccount(int amount);
+		void creditAccount(int amount);
+
+	private:
+		int m_balance;
+};
+
+
+
 Account::Account(int customerID, std::string customerFirstName,
 	std::string customerLastName)
 {
@@ -84,6 +99,34 @@ void Checking::creditAccount(int amount)
 	}
 }
 
+Savings::Savings(int customerID, std::string customerFirstName,
+	std::string customerLastName, int initialBalance)
+	: Account(customerID, customerFirstName, customerLastName)
+{
+	m_balance = initialBalance;
+}
+
+int Savings::getBalance()
+{
+	return m_balance;
+}
+
+void Savings::debitAccount(int amount)
+{
+	if(amount>0)
+	{
+		m_balance -= amount;
+	}
+}
+
+void Savings::creditAccount(int amount)
+{
+	if(amount>0)
+	{
+		m_balance += amount;
+	}
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -102,6 +145,13 @@ int main(int argc, char *argv[])
 	checking.creditAccount(250);
 	std::cout << "Checking account new balance: $" << 
 		checking.getBalance() << std::endl;
+
+	std::cout << "Adding savings account with initial balance of 3500"
+		<< std::endl;
+
+	Savings savings (86868, "Bob", "Jones", 3500);
+	std::cout << "Savings account balance: $" <<
+		savings.getBalance() << std::endl;
 
 	return 0;
 }
