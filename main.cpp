@@ -206,6 +206,7 @@ void displayMainMenu(int customerID, std::string customerName)
 		std::cout << "1 - View Account Balance\n";
 		std::cout << "2 - Withdrawl\n";
 		std::cout << "3 - Deposit\n";
+		std::cout << "4 - Exit/Return Card\n";
 		newConsoleLine();
 		std::cout << "Please select an action: ";
 		
@@ -232,6 +233,10 @@ int main(int argc, char *argv[])
 	int selectedCustomerID = 0;
 	int selectedCustomerAccountType = 0;
 	int menuSelection;
+	int debitAmount = 0;
+	int creditAmount = 0;
+	bool finishedMenu = false;
+	bool inputValid;
 	std::string selectedCustomerName = "";
 
 	Checking checking (1000, "John", "Doe", 240, 1);
@@ -262,93 +267,202 @@ int main(int argc, char *argv[])
 
 		if(success)
 		{
-			for(int i = 0; i < customerIDS.size(); i++)
+			for(int i = 0; i < customerIDS.size() && !foundCustomer; i++)
 			{
 				if(customerIDS[i] == selectedID)
 				{
 
-					std::cout << "size: " << customerIDS.size() << std::endl;
-					std::cout << "i: " << i << std::endl;
-					std::cout << "Id list: " << customerIDS[i]
-						<< "selection: " << selectedID << std::endl;
-					std::cout << std::endl << customerIDS[0] <<
-					std::endl << customerIDS[1] << std::endl <<
-					customerIDS[2] << std::endl;
-					if(!foundCustomer)
-					{
-						selectedCustomerID = customerIDS[i];
-						selectedCustomerAccountType = customerAccountTypes[i];
+					selectedCustomerID = customerIDS[i];
+					selectedCustomerAccountType = customerAccountTypes[i];
 				
-/*						
-						if(selectedCustomerAccountType == 1)
-						{
-							selectedCustomerName = checking.getCustomerFullName();
-							std::cout << "\nrun 1";
-						}
-						else if (selectedCustomerAccountType == 2)
-						{
-							selectedCustomerName = savings.getCustomerFullName();
-							std::cout << "\nrun 2";
-						}
-						else if (selectedCustomerAccountType == 3)
-						{
-		
-							selectedCustomerName = business.getCustomerFullName();
-							std::cout << "\nrun 3";
-						}
-*/
-						switch(selectedCustomerAccountType)
-						{
-							case 1:
-								selectedCustomerName = checking.getCustomerFullName();
-								break;
-							case 2:
-								selectedCustomerName = savings.getCustomerFullName();
-								break;
-							case 3:
-								selectedCustomerName = business.getCustomerFullName();
-								break;
-						}
-						foundCustomer = true;
+/*					
+					if(selectedCustomerAccountType == 1)
+					{
+	
+						selectedCustomerName = checking.getCustomerFullName();
+						std::cout << "\nrun 1";
 					}
+					else if (selectedCustomerAccountType == 2)
+					{
+						selectedCustomerName = savings.getCustomerFullName();
+						std::cout << "\nrun 2";
+					}
+					else if (selectedCustomerAccountType == 3)
+					{
+	
+						selectedCustomerName = business.getCustomerFullName();
+						std::cout << "\nrun 3";
+					}
+*/
+					switch(selectedCustomerAccountType)
+					{
+						case 1:
+							selectedCustomerName = checking.getCustomerFullName();
+							break;
+						case 2:
+							selectedCustomerName = savings.getCustomerFullName();
+							break;
+						case 3:
+							selectedCustomerName = business.getCustomerFullName();
+							break;
+					}
+					foundCustomer = true;
 				}
 			}
 		}
 	}
-  //TODO display main menu
-	displayMainMenu(selectedCustomerID, selectedCustomerName);
+	
+	//Start program loop here. Once exit/return card is selected, the flag
+	//will be set to end this loop.
 
-	std::cin >> input;
-	bool inputValid;
-	menuSelection = convertInt(input, inputValid);
-			
-	if(inputValid)
+
+	while(!finishedMenu)
 	{
-		if(menuSelection > 0 && menuSelection < 4)
+	
+
+	  //TODO display main menu
+		displayMainMenu(selectedCustomerID, selectedCustomerName);
+
+		std::cin >> input;
+		
+		menuSelection = convertInt(input, inputValid);
+			
+		if(inputValid)
 		{
-			switch(menuSelection)
+			if(menuSelection > 0 && menuSelection < 5)
 			{
-				case 1:
-					newConsoleLine();
-					std::cout << "Your account balance is: ";
-					switch(selectedCustomerAccountType)
-					{
-						case 1: 
-							std::cout << checking.getBalance();
-							break;
-						case 2:
-							std::cout << savings.getBalance();
-							break;
-						case 3:
-							std::cout << business.getBalance();
-							break;
+				switch(menuSelection)
+				{
+					case 1:
+						newConsoleLine();
+						std::cout << "Your account balance is: ";
+						switch(selectedCustomerAccountType)
+						{
+							case 1: 
+								std::cout << checking.getBalance();
+								break;
+							case 2:
+								std::cout << savings.getBalance();
+								break;
+							case 3:
+								std::cout << business.getBalance();
+								break;
+						}
+						std::cout << std::endl;
+						newConsoleLine();
+						break;
+					case 2:
+						newConsoleLine();
+						
+						std::cout << "How much would you like to withdrawl?: ";
+						std::cin >> input;
+			
+						debitAmount = convertInt(input, inputValid);
+						
+						if(inputValid);
+						{
+							if(debitAmount <= 0)
+							{
+								std::cout << "Error amount must be greater than 0.\n";
+							}
+							else
+							{
+								switch(selectedCustomerAccountType)
+								{
+									case 1:
+										if(debitAmount > checking.getBalance())
+										{
+											std::cout << "Insufficent funds.\n";
+											break;
+										}
+										else
+										{
+											checking.debitAccount(debitAmount);
+											std::cout << "\nCash has been dispensed.\n";
+											std::cout << "Your accunt balance is: " <<
+												checking.getBalance() << "\n";
+											break;
+										}
+									case 2:
+										if(debitAmount > savings.getBalance())
+										{
+											std::cout << "Insufficent funds.\n";
+											break;
+										}
+										else
+										{
+											savings.debitAccount(debitAmount);
+											std::cout << "\nCash has been dispensed.\n";
+											std::cout << "Your accunt balance is: " <<
+											savings.getBalance() << "\n";
+											break;
+										}
+								case 3:
+									if(debitAmount > business.getBalance())
+										{
+											std::cout << "Insufficent funds.\n";
+											break;
+										}
+										else
+										{
+											business.debitAccount(debitAmount);
+											std::cout << "\nCash has been dispensed.\n";
+											std::cout << "Your accunt balance is: " <<
+											business.getBalance() << "\n";
+											break;
+										}
+								}
+						}	
 					}
-					std::cout << std::endl;
-					newConsoleLine();
 					break;
+					case 3:
+						newConsoleLine();
+						
+						std::cout << "How much would you like to deposit?: ";
+						std::cin >> input;
+			
+						creditAmount = convertInt(input, inputValid);
+						
+						if(inputValid);
+						{
+							if(creditAmount <= 0)
+							{
+								std::cout << "Error amount must be greater than 0.\n";
+							}
+							else
+							{
+								switch(selectedCustomerAccountType)
+								{
+									case 1:
+										checking.creditAccount(creditAmount);
+										std::cout << "\nDeposit completed.\n";
+										std::cout << "Your accunt balance is: " <<
+										checking.getBalance() << "\n";
+										break;
+										
+									case 2:
+										savings.creditAccount(creditAmount);
+										std::cout << "\nDeposit completed.\n";
+										std::cout << "Your accunt balance is: " <<
+										savings.getBalance() << "\n";
+										break;
+									case 3:
+										business.creditAccount(creditAmount);
+										std::cout << "\nDeposit completed..\n";
+										std::cout << "Your accunt balance is: " <<
+										business.getBalance() << "\n";
+										break;
+								}
+						}
+						break;
+					case 4:
+						finishedMenu = true;
+						break;	
+					}
+						
+					
+				}
 			}
-			
-			
 		}
 	}
 	
